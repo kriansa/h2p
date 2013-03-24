@@ -39,7 +39,7 @@ More information: http://garajau.com.br/blog/2013/03/h2p-convert-html-files-to-p
 
 ## Composer
 
-Just put `{ "kriansa/h2p" => "dev-master" }` into your require property.
+Just put `{ "kriansa/h2p": "dev-master" }` into your require property.
 
 ## License
 
