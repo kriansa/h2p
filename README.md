@@ -1,8 +1,12 @@
 # H2P
 
-Convert your HTML files to PDF with ease. CSS3, HTML5 and Javascript enabled, so you can convert and print your files just like you see them in your browser.
+Convert your HTML files to PDF with ease. Thanks to PhantomJS, you can write CSS3, HTML5 and Javascript and it will convert and print your files just like you see them in your browser.
 
 ## How to use
+
+It's very simple, but first you must download the PhantomJS binary file according to your system (Windows, Mac, Linux-X86 or Linux-X86_64) and put it in the right **bin** folder.
+
+You can download it here: http://phantomjs.org/download.html
 
 ```php
         // Set the input content to convert
@@ -17,9 +21,7 @@ Convert your HTML files to PDF with ease. CSS3, HTML5 and Javascript enabled, so
 
         // Save it somewhere
         $output->save('/another/path/to/file.pdf');
-
         // or
-
         header('Pragma: public');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
