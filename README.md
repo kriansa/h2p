@@ -9,26 +9,30 @@ It's very simple, but first you must download the PhantomJS binary file accordin
 You can download it here: http://phantomjs.org/download.html
 
 ```php
-        // Set the input content to convert
-        $input = new TempFile($htmlString);
-        $input = 'http://www.google.com/';
-        $input = '/path/to/file.html';
+use H2P\Converter;
+use H2P\Adapter\PhantomJS;
+use H2P\TempFile;
 
-        // Then do the conversion
-        $output = new TempFile();
-        $instance = new Converter(new PhantomJS(), $input, $output);
-        $instance->convert();
+// Set the input content to convert
+$input = new TempFile($htmlString);
+$input = 'http://www.google.com/';
+$input = '/path/to/file.html';
 
-        // Save it somewhere
-        $output->save('/another/path/to/file.pdf');
-        // or
-        header('Pragma: public');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Content-Type: application/pdf');
-        header('Content-Transfer-Encoding: binary');
-        header('Content-Length: ' . filesize($output->getFileName()));
-        echo $output->getContent();
+// Then do the conversion
+$output = new TempFile();
+$instance = new Converter(new PhantomJS(), $input, $output);
+$instance->convert();
+
+// Save it somewhere
+$output->save('/another/path/to/file.pdf');
+// or
+header('Pragma: public');
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Content-Type: application/pdf');
+header('Content-Transfer-Encoding: binary');
+header('Content-Length: ' . filesize($output->getFileName()));
+echo $output->getContent();
 ```
 
 More information: http://garajau.com.br/blog/2013/03/h2p-convert-html-files-to-pdf/
