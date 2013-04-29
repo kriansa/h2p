@@ -32,82 +32,120 @@
  */
 
 namespace H2P\Adapter;
+
 use H2P\Adapter\AdapterAbstract;
 use H2P\Exception;
 
 class PhantomJS extends AdapterAbstract
 {
     /**
+     * Library bin path
+     * 
      * @var string
      */
-    protected $platform;
-
+    protected $binPath = '../../../bin';
+    
     /**
-     * @var string
+     * Paths to search PhantomJS binary file
+     * 
+     * @var array
      */
-    protected $binFolder;
-
-    /**
-     * Platform constants
-     */
-    const PLATFORM_WINDOWS = 'WINDOWS';
-    const PLATFORM_LINUX_X86 = 'LINUX-X86';
-    const PLATFORM_LINUX_X86_64 = 'LINUX-X86_64';
-    const PLATFORM_DARWIN = 'DARWIN';
+    protected $searchPaths = array();
 
     /**
      * Constructor
      *
-     * @param string $platform
-     * @param string $binFolder
+     * @param array|string $paths Path for PhantomJS binary file
      */
-    public function __construct($platform = null, $binFolder = null)
-    {
-        if ($platform) {
-            $this->platform = $platform;
-        } else {
-            switch (php_uname('s')) {
-                case 'Linux':
-                    $this->platform = (PHP_INT_MAX == 2147483647) ? static::PLATFORM_LINUX_X86 : static::PLATFORM_LINUX_X86_64;
-                    break;
-                case 'Darwin':
-                    $this->platform = static::PLATFORM_DARWIN;
-                    break;
-                case 'Windows NT':
-                    $this->platform = static::PLATFORM_WINDOWS;
-                    break;
-            }
-        }
-
-        if ($binFolder) {
-            $this->setBinFolder($binFolder);
-        } else {
-            $this->setBinFolder(realpath(__DIR__ . '/../../../bin'));
-        }
+    public function __construct($paths = array())
+    {        
+        $this->binPath = realpath(__DIR__ . '/' . $this->binPath);
+        $this->detectSearchPaths($paths);
     }
-
+    
     /**
-     * Set the binary folder
-     *
-     * @param string $binFolder
-     * @return $this
+     * Set and detect paths for PhantomJS binary file
+     * 
+     * @param array $paths
+     * @return PhantomJS
      */
-    public function setBinFolder($binFolder)
+    protected function detectSearchPaths($paths = array())
     {
-        $this->binFolder = $binFolder;
+        $os = php_uname('s');
+
+        if (is_string($paths)) {
+            $paths = array($paths);
+        }
+
+        switch ($os) {
+            case 'Windows NT':
+                $paths[] = 'C:/Windows/phantomjs.exe';
+                $paths[] = $this->binPath . '/win32/phantomjs.exe';
+                break;
+            case 'Darwin':
+                $paths[] = '/usr/local/bin/phantomjs'; // I don't know if is the right path for Mac
+                $paths[] = $this->binPath . '/mac/phantomjs';
+                break;
+            case 'Linux':
+            default:
+                $paths[] = '/usr/local/bin/phantomjs';
+                $paths[] = $this->binPath . '/linux-x86_64/phantomjs';
+                $paths[] = $this->binPath . '/linux-x86/phantomjs';
+        }
+
+        $this->searchPaths = $paths;
+        
         return $this;
     }
 
     /**
-     * Return the binary folder
+     * Set the PhantomJS search path
      *
-     * @return string
+     * @param string $searchPath
+     * @return PhantomJS
      */
-    public function getBinFolder()
+    public function setSearchPath($searchPath)
     {
-        return $this->binFolder;
+        return $this->detectSearchPaths($searchPath);
     }
 
+    /**
+     * Return the search paths for PhantomJS
+     *
+     * @return array
+     */
+    public function getSearchPaths()
+    {
+        return $this->searchPaths;
+    }
+
+    /**
+     * Returns the PhantomJS binary path based on defined Search Paths
+     * 
+     * @return string
+     * @throws Exception
+     */
+    protected function getPhantomPath()
+    {
+        // Return the first valid file
+        foreach ($this->searchPaths as $path) {
+            if (is_file($path)) {
+                return $path;
+            }
+        }
+
+        throw new Exception('PhantomJS binary not found! Please, download it at <http://phantomjs.org/download.html>');
+    }
+    
+    /**
+     * Returns H2P Converter Script Path
+     * 
+     * @return string
+     */
+    protected function getConverterPath()
+    {
+        return $this->binPath . '/converter.js';
+    }
 
     /**
      * Get the binary script to execute
@@ -117,22 +155,10 @@ class PhantomJS extends AdapterAbstract
      */
     protected function getBinPath()
     {
-        static $binPaths;
-        if (!$binPaths) {
-            $binDir = $this->getBinFolder();
-            $binPaths = array(
-                static::PLATFORM_WINDOWS => $binDir . '/win32/phantomjs.exe',
-                static::PLATFORM_LINUX_X86 => $binDir . '/linux-x86/phantomjs',
-                static::PLATFORM_LINUX_X86_64 => $binDir . '/linux-x86_64/phantomjs',
-                static::PLATFORM_DARWIN => $binDir . '/mac/phantomjs',
-            );
-        }
+        $phantomjs = $this->getPhantomPath();
+        $converter = $this->getConverterPath();
 
-        if (!is_file($binPaths[$this->platform])) {
-            throw new Exception('PhantomJS binary not found! Please, download it at <http://phantomjs.org/download.html> and put it on ' . dirname($binPaths[$this->platform]) . ' folder');
-        }
-
-        return escapeshellarg($binPaths[$this->platform]) . ' ' . escapeshellarg($binDir . '/converter.js');
+        return escapeshellarg($phantomjs) . ' ' . escapeshellarg($converter);
     }
 
     /**
