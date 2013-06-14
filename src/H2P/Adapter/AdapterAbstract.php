@@ -46,5 +46,5 @@ abstract class AdapterAbstract
      * @return bool
      * @throws \H2P\Exception
      */
-    abstract public function convert($uri, $destination, $format, $orientation, $border);
+    abstract public function convert($uri, $destination, $format, $orientation, $border, $zoom, $session);
 }

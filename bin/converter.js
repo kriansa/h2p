@@ -53,17 +53,26 @@ try {
     var format = args[3] || 'A4';
     var orientation = args[4] || 'portrait';
     var border = args[5] || '1cm';
+    var zoom = args[6] || 1;
 
     page.customHeaders = {
         'User-Agent': 'PhantomJS'
     };
+
+    if(args[7]){
+        var result = phantom.addCookie({
+          name : "PHPSESSID",
+          value : args[7],
+          domain : args[8]
+        });
+    }
 
     page.open(uri, function (status) {
         try {
             if (status !== 'success') {
                 throw 'Unable to access the URI!';
             }
-
+            page.zoomFactor = zoom;
             page.paperSize = { format: format, orientation: orientation, border: border };
             page.render(destination, { format: 'pdf' });
 

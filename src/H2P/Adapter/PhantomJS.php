@@ -172,7 +172,7 @@ class PhantomJS extends AdapterAbstract
      * @return bool
      * @throws \H2P\Exception
      */
-    public function convert($uri, $destination, $format, $orientation, $border)
+    public function convert($uri, $destination, $format, $orientation, $border, $zoom, $session)
     {
         $bin = $this->getBinPath();
         $args[] = escapeshellarg($uri);
@@ -180,6 +180,9 @@ class PhantomJS extends AdapterAbstract
         $args[] = escapeshellarg($format);
         $args[] = escapeshellarg($orientation);
         $args[] = escapeshellarg($border);
+        $args[] = escapeshellarg($zoom);
+        $args[] = escapeshellarg($session);
+        $args[] = escapeshellarg(parse_url($uri,PHP_URL_HOST));
 
         $result = json_decode(trim(shell_exec($bin . ' ' . implode(' ', $args))));
 
