@@ -45,7 +45,7 @@ class TempFile
      * @param string $extension
      * @throws \H2P\Exception
      */
-    public function __construct($content = null, $extension = 'tmp')
+    public function __construct($content = null, $extension = 'html')
     {
         $cache_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . sha1(uniqid()) . '.' . $extension;
 
