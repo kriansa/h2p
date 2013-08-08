@@ -45,6 +45,6 @@ class AgenteTest extends \PHPUnit_Framework_TestCase
     		return;
     	}
     	
-    	$this->assertFail('The extension was not .html, but test did not fail');
+    	$this->fail('The extension was not .html, but test did not fail');
     }
 }
