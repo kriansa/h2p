@@ -23,4 +23,28 @@ class AgenteTest extends \PHPUnit_Framework_TestCase
         $instance->convert();
         $this->assertFileExists($output->getFileName());
     }
+    
+    public function testConvertStringInputToPdf()
+    {
+    	$input = new TempFile("<html><body><h1>Hello world!</h1></body></html>");
+    	$output = new TempFile();
+    	$instance = new Converter(new PhantomJS(), $input, $output);
+    	$instance->convert();
+    	$this->assertFileExists($output->getFileName());
+    }
+    
+    public function testConvertStringInputToPdfWithInvalidExtension()
+    {
+    	$input = new TempFile("<html><body><h1>Hello world!</h1></body></html>", 'tmp');
+    	$output = new TempFile();
+    	$instance = new Converter(new PhantomJS(), $input, $output);
+    	
+    	try {
+    		$instance->convert();
+    	} catch (\Exception $e) {
+    		return;
+    	}
+    	
+    	$this->fail('The extension was not .html, but test did not fail');
+    }
 }
