@@ -166,20 +166,16 @@ class PhantomJS extends AdapterAbstract
      *
      * @param string $uri
      * @param string $destination
-     * @param string $format
-     * @param string $orientation
-     * @param string $border
+     * @param array $config An associative array containing configuration for the converter.
      * @return bool
      * @throws \H2P\Exception
      */
-    public function convert($uri, $destination, $format, $orientation, $border)
+    public function convert($uri, $destination, $format, $orientation, array $config = array())
     {
         $bin = $this->getBinPath();
         $args[] = escapeshellarg($uri);
         $args[] = escapeshellarg($destination);
-        $args[] = escapeshellarg($format);
-        $args[] = escapeshellarg($orientation);
-        $args[] = escapeshellarg($border);
+        $args[] = escapeshellarg(json_encode($config));
 
         $result = json_decode(trim(shell_exec($bin . ' ' . implode(' ', $args))));
 
