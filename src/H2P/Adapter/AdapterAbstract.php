@@ -40,11 +40,9 @@ abstract class AdapterAbstract
      *
      * @param string $uri
      * @param string $destination
-     * @param string $format
-     * @param string $orientation
-     * @param string $border
+     * @param array  $config An associative array containing configuration for the converter.
      * @return bool
      * @throws \H2P\Exception
      */
-    abstract public function convert($uri, $destination, $format, $orientation, $border);
+    abstract public function convert($uri, $destination, array $config = array());
 }

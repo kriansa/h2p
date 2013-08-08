@@ -51,21 +51,11 @@ class Converter
      * @var string|\H2P\TempFile
      */
     protected $destination;
-
+    
     /**
-     * @var string
+     * @var array
      */
-    protected $format;
-
-    /**
-     * @var string
-     */
-    protected $orientation;
-
-    /**
-     * @var string
-     */
-    protected $border;
+    protected $config = array();
 
     /**
      * Constants
@@ -113,23 +103,29 @@ class Converter
      * @param \H2P\Adapter\AdapterAbstract $adapter
      * @param string|\H2P\TempFile $uri
      * @param string|\H2P\TempFile $destination
-     * @param string $format
-     * @param string $orientation
-     * @param string $border 1cm, 3in
+     * @param array $config An associative array containing configuration for the converter.
      */
-    public function __construct(AdapterAbstract $adapter, $uri, $destination, $format = null, $orientation = null, $border = null)
+    public function __construct(AdapterAbstract $adapter, $uri, $destination, array $config = array())
     {
+    	// Check to see if config parameters are valid
+    	$validConfig = array('format', 'orientation', 'border', 'margin', 'zoomFactor');
+    	
+    	foreach ($config as $key => $value) {
+    		
+    		if(!in_array($key, $validConfig)){
+    			throw new Exception("Invalid configuration option: $key");
+    		}
+    	}
+    	
         // Set defaults
-        $format or $format = static::FORMAT_A4;
-        $orientation or $orientation = static::ORIENTATION_PORTRAIT;
-        $border or $border = '1cm';
+        isset($config['format']) or $config['format'] = static::FORMAT_A4;
+        isset($config['orientation']) or $config['orientation'] = static::ORIENTATION_PORTRAIT;
+        isset($config['border']) or $config['border'] = '1cm';
 
         $this->adapter = $adapter;
         $this->uri = $uri;
         $this->destination = $destination;
-        $this->format = (string) $format;
-        $this->orientation = (string) $orientation;
-        $this->border = (string) $border;
+        $this->config = $config;
     }
 
     /**
@@ -138,14 +134,12 @@ class Converter
      * @param \H2P\Adapter\AdapterAbstract $adapter
      * @param string|\H2P\TempFile $uri
      * @param string|\H2P\TempFile $destination
-     * @param string $format
-     * @param string $orientation
-     * @param string $border 1cm, 3in
+     * @param array $config An associative array containing configuration for the converter.
      * @return \H2P\Converter
      */
-    public static function create(AdapterAbstract $adapter, $uri, $destination, $format = null, $orientation = null, $border = null)
+    public static function create(AdapterAbstract $adapter, $uri, $destination, array $config = array())
     {
-        return new static($adapter, $uri, $destination, $format, $orientation, $border);
+        return new static($adapter, $uri, $destination, $config);
     }
 
     /**
@@ -165,6 +159,6 @@ class Converter
             $destination = $this->destination->getFileName();
         }
 
-        return $this->adapter->convert($uri, $destination, $this->format, $this->orientation, $this->border);
+        return $this->adapter->convert($uri, $destination, $this->config);
     }
 }

@@ -47,12 +47,18 @@ try {
     if (args.length < 3) {
         throw 'You must pass the URI and the Destination param!';
     }
+    
+    var config = {};
+    
+    if (args[3]){
+    	config = JSON.parse(args[3]);
+    }
 
     var uri = args[1];
     var destination = args[2];
-    var format = args[3] || 'A4';
-    var orientation = args[4] || 'portrait';
-    var border = args[5] || '1cm';
+    var format = config.format || 'A4';
+    var orientation = config.orientation || 'portrait';
+    var border = config.border || '1cm';
 
     page.customHeaders = {
         'User-Agent': 'PhantomJS'
@@ -64,7 +70,48 @@ try {
                 throw 'Unable to access the URI!';
             }
 
-            page.paperSize = { format: format, orientation: orientation, border: border };
+            page.paperSize = { format: format, orientation: orientation, border: border, header: {}, footer: {}};
+            
+            if(config.zoomFactor){
+            	page.zoomFactor = config.zoomFactor;
+            }
+            
+            if(config.margin){
+            	page.paperSize.margin = config.margin;
+            }
+            
+            // Custom header in the markup
+            if (page.evaluate(function(){return typeof h2pHeader == "object";})) {
+            	
+            	paperSize = page.paperSize;
+            	
+                paperSize.header.height = page.evaluate(function() {
+                    return h2pHeader.height;
+                });
+                
+                paperSize.header.contents = phantom.callback(function(pageNum, numPages) {
+                    return page.evaluate(function(pageNum, numPages){return h2pHeader.contents(pageNum, numPages);}, pageNum, numPages);
+                });
+                
+                page.paperSize = paperSize;
+            }
+
+            // Custom footer in the markup
+            if (page.evaluate(function(){return typeof h2pFooter == "object";})) {
+
+            	paperSize = page.paperSize;
+            	
+            	paperSize.footer.height = page.evaluate(function() {
+                    return h2pFooter.height;
+                });
+            	
+            	paperSize.footer.contents = phantom.callback(function(pageNum, numPages) {
+                    return page.evaluate(function(pageNum, numPages){return h2pFooter.contents(pageNum, numPages);}, pageNum, numPages);
+                });
+            	
+            	page.paperSize = paperSize;
+            }
+
             page.render(destination, { format: 'pdf' });
 
             console.log(JSON.stringify({
