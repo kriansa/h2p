@@ -170,7 +170,7 @@ class PhantomJS extends AdapterAbstract
      * @return bool
      * @throws \H2P\Exception
      */
-    public function convert($uri, $destination, $format, $orientation, array $config = array())
+    public function convert($uri, $destination, array $config = array())
     {
         $bin = $this->getBinPath();
         $args[] = escapeshellarg($uri);
