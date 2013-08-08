@@ -47,12 +47,18 @@ try {
     if (args.length < 3) {
         throw 'You must pass the URI and the Destination param!';
     }
+    
+    var config = {};
+    
+    if (args[3]){
+    	config = JSON.parse(args[3]);
+    }
 
     var uri = args[1];
     var destination = args[2];
-    var format = args[3] || 'A4';
-    var orientation = args[4] || 'portrait';
-    var border = args[5] || '1cm';
+    var format = config.format || 'A4';
+    var orientation = config.orientation || 'portrait';
+    var border = config.border || '1cm';
 
     page.customHeaders = {
         'User-Agent': 'PhantomJS'
@@ -65,6 +71,15 @@ try {
             }
 
             page.paperSize = { format: format, orientation: orientation, border: border };
+            
+            if(config.zoomFactor){
+            	page.zoomFactor = config.zoomFactor;
+            }
+            
+            if(config.margin){
+            	page.paperSize.margin = config.margin;
+            }
+           
             page.render(destination, { format: 'pdf' });
 
             console.log(JSON.stringify({
