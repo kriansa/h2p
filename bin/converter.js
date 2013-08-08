@@ -79,7 +79,31 @@ try {
             if(config.margin){
             	page.paperSize.margin = config.margin;
             }
-           
+            
+            // Custom header in the markup
+            if (page.evaluate(function(){return typeof h2pHeader == "object";})) {
+
+                page.paperSize.header.height = page.evaluate(function() {
+                    return h2pHeader.header.height;
+                });
+                
+                page.paperSize.header.contents = phantom.callback(function(pageNum, numPages) {
+                    return page.evaluate(function(pageNum, numPages){return h2pHeader.header.contents(pageNum, numPages);}, pageNum, numPages);
+                });
+            }
+
+            // Custom footer in the markup
+            if (page.evaluate(function(){return typeof h2pFooter == "object";})) {
+            	
+            	page.paperSize.footer.height = page.evaluate(function() {
+                    return h2pFooter.footer.height;
+                });
+            	
+            	page.paperSize.footer.contents = phantom.callback(function(pageNum, numPages) {
+                    return page.evaluate(function(pageNum, numPages){return h2pFooter.footer.contents(pageNum, numPages);}, pageNum, numPages);
+                });
+            }
+
             page.render(destination, { format: 'pdf' });
 
             console.log(JSON.stringify({
