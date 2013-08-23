@@ -1,4 +1,4 @@
-/**
+/*
  * H2P - HTML to PDF PHP library
  *
  * JS Converter File
@@ -44,28 +44,49 @@ function errorHandler(e) {
 }
 
 try {
-    if (args.length < 3) {
+    if (args.length < 2) {
         throw 'You must pass the URI and the Destination param!';
     }
 
-    var uri = args[1];
-    var destination = args[2];
-    var format = args[3] || 'A4';
-    var orientation = args[4] || 'portrait';
-    var border = args[5] || '1cm';
+    // Take all options in one JSON param
+    var options = JSON.parse(args[1]);
 
-    page.customHeaders = {
-        'User-Agent': 'PhantomJS'
-    };
+    page.customHeaders = options.request.headers;
+    phantom.cookies = options.request.cookies;
 
-    page.open(uri, function (status) {
+    page.open(options.request.uri + (options.request.method == 'GET' ? '?' + options.request.params : ''), options.request.method, options.request.params, function (status) {
         try {
             if (status !== 'success') {
-                throw 'Unable to access the URI!';
+                throw 'Unable to access the URI! (Make sure you\'re using a .html extension if you\'re trying to use a local file)';
             }
 
-            page.paperSize = { format: format, orientation: orientation, border: border };
-            page.render(destination, { format: 'pdf' });
+            var paperSize = {
+                format: options.format,
+                orientation: options.orientation,
+                border: options.border
+            };
+
+            if (options.footer) {
+                paperSize.footer = {
+                    height: options.footer.height,
+                    contents: phantom.callback(function(pageNum, totalPages) {
+                        return options.footer.content.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
+                    })
+                }
+            }
+
+            if (options.header) {
+                paperSize.header = {
+                    height: options.header.height,
+                    contents: phantom.callback(function(pageNum, totalPages) {
+                        return options.header.content.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
+                    })
+                }
+            }
+
+            page.paperSize = paperSize;
+            page.zoomFactor = options.zoomFactor;
+            page.render(options.destination, { format: 'pdf' });
 
             console.log(JSON.stringify({
                 success: true,

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * H2P - HTML to PDF PHP library
  *
  * Exception Class

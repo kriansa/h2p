@@ -2,6 +2,10 @@
 
 Convert your HTML files to PDF with ease. Thanks to PhantomJS, you can write CSS3, HTML5 and Javascript and it will convert and print your files just like you see them in your browser.
 
+## WIP-2.0
+
+This branch is the WIP for the new version. Anything here can be changed until the release. There are breaking changes since 1.0.
+
 ## How to use
 
 It's very simple, but first you must download the PhantomJS binary file according to your system (Windows, Mac, Linux-X86 or Linux-X86_64) and put it in the right **bin** folder.
@@ -9,37 +13,32 @@ It's very simple, but first you must download the PhantomJS binary file accordin
 You can download it here: http://phantomjs.org/download.html
 
 ```php
-use H2P\Converter;
-use H2P\Adapter\PhantomJS;
+use H2P\Converter\PhantomJS;
 use H2P\TempFile;
 
-// Set the input content to convert
-$input = new TempFile($htmlString);
-$input = 'http://www.google.com/';
-$input = '/path/to/file.html';
-
-// Then do the conversion
+$converter = new PhantomJS();
 $output = new TempFile();
-$instance = new Converter(new PhantomJS(), $input, $output);
-$instance->convert();
+
+// Convert destination accepts TempFile or string with the path to save the file
+$converter->convert('http://www.google.com/', $output);
 
 // Save it somewhere
 $output->save('/another/path/to/file.pdf');
-// or
+// or send
 header('Pragma: public');
 header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Content-Type: application/pdf');
 header('Content-Transfer-Encoding: binary');
 header('Content-Length: ' . filesize($output->getFileName()));
-echo $output->getContent();
+readfile($output->getFileName());
 ```
 
-More information: http://garajau.com.br/blog/2013/03/h2p-convert-html-files-to-pdf/
+You can find more examples in the **samples** folder.
 
 ## Composer
 
-Just put `{ "kriansa/h2p": "dev-master" }` into your require property.
+Just put `{ "kriansa/h2p": "dev-wip-2.0" }` into your require property.
 
 ## License
 

@@ -1,8 +1,8 @@
 <?php
-/**
+/*
  * H2P - HTML to PDF PHP library
  *
- * Abstract Adapter Class
+ * Sample file
  *
  * LICENSE: The MIT License (MIT)
  *
@@ -31,20 +31,31 @@
  * @license    MIT License
  */
 
-namespace H2P\Adapter;
+include '../autoloader.php';
 
-abstract class AdapterAbstract
-{
-    /**
-     * Convert the URI to destination with the specified options
-     *
-     * @param string $uri
-     * @param string $destination
-     * @param string $format
-     * @param string $orientation
-     * @param string $border
-     * @return bool
-     * @throws \H2P\Exception
-     */
-    abstract public function convert($uri, $destination, $format, $orientation, $border);
-}
+use H2P\ConverterFactory;
+use H2P\Converter\PhantomJS;
+use H2P\TempFile;
+
+$converter = ConverterFactory::factory(array(
+    'converter' => 'PhantomJS',
+    'options' => array(
+        'orientation' => PhantomJS::ORIENTATION_LANDSCAPE,
+        'format' => PhantomJS::FORMAT_A4,
+        'zoomFactor' => 2,
+        'border' => '1cm',
+        'header' => array(
+            'height' => '1cm',
+            'content' => "<h1>{{pageNum}} / {{totalPages}}</h1>",
+        ),
+        'footer' => array(
+            'height' => '1cm',
+            'content' => "<h1>{{pageNum}} / {{totalPages}}</h1>",
+        ),
+    )
+));
+
+$destination = new TempFile();
+$converter->convert('http://www.google.com/', $destination);
+
+// $destination->save('/home/user/Documents/page.pdf');
