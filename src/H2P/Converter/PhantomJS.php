@@ -84,6 +84,7 @@ class PhantomJS extends ConverterAbstract
      * @var array
      */
     protected $options = array(
+    	'search_paths' => array(),
         'orientation' => self::ORIENTATION_PORTRAIT,
         'format' => self::FORMAT_A4,
         'zoomFactor' => 1,
@@ -113,7 +114,7 @@ class PhantomJS extends ConverterAbstract
      */
     public function __construct($options = null)
     {
-        $paths = !empty($options['search_paths']) ? $options['paths'] : array();
+        $paths = !empty($options['search_paths']) ? $options['search_paths'] : array();
 
         // Set the right path for the bin directory
         $this->binPath = realpath(__DIR__ . '/' . $this->binPath);
