@@ -84,7 +84,7 @@ class PhantomJS extends ConverterAbstract
      * @var array
      */
     protected $options = array(
-    	'search_paths' => array(),
+        'search_paths' => array(),
         'orientation' => self::ORIENTATION_PORTRAIT,
         'format' => self::FORMAT_A4,
         'zoomFactor' => 1,
