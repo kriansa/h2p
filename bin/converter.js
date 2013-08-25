@@ -69,7 +69,7 @@ try {
             // Custom footer in the markup
             if (page.evaluate(function(){return typeof h2pFooter == "object";})) {
             	
-        		paperSize.footer = {
+                paperSize.footer = {
                     height: page.evaluate(function() {
                         return h2pFooter.height;
                     }),
@@ -96,7 +96,7 @@ try {
             // Custom header in the markup
             if (page.evaluate(function(){return typeof h2pHeader == "object";})) {
             	
-        		paperSize.header = {
+                paperSize.header = {
                     height: page.evaluate(function() {
                         return h2pHeader.height;
                     }),
