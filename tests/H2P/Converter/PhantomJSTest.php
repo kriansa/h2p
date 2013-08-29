@@ -9,6 +9,7 @@ class PhantomJSTest extends \PHPUnit_Framework_TestCase
     public function testConvert()
     {
         $converter = new PhantomJS(array(
+            'search_paths' => shell_exec('which phantomjs'),
             'orientation' => PhantomJS::ORIENTATION_LANDSCAPE,
             'format' => PhantomJS::FORMAT_A4,
             'zoomFactor' => 2,

@@ -113,7 +113,8 @@ class PhantomJS extends ConverterAbstract
      */
     public function __construct($options = null)
     {
-        $paths = !empty($options['search_paths']) ? $options['paths'] : array();
+        $paths = !empty($options['search_paths']) ? $options['search_paths'] : array();
+        unset($options['search_paths']);
 
         // Set the right path for the bin directory
         $this->binPath = realpath(__DIR__ . '/' . $this->binPath);
@@ -149,7 +150,7 @@ class PhantomJS extends ConverterAbstract
 
         array_unshift($paths, $default_path);
         $this->searchPaths = $paths;
-        
+
         return $this;
     }
 
@@ -196,7 +197,7 @@ class PhantomJS extends ConverterAbstract
     {
         // Return the first valid file
         foreach ($this->searchPaths as $path) {
-            if (is_file($path)) {
+            if (is_executable($path = trim($path))) {
                 return $path;
             }
         }
