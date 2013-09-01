@@ -67,23 +67,25 @@ try {
             };
 
             // Custom footer in the markup
-            if (page.evaluate(function(){return typeof h2pFooter == "object";})) {
-            	
-                paperSize.footer = {
-                    height: page.evaluate(function() {
-                        return h2pFooter.height;
-                    }),
-                    
-                    contents: phantom.callback(function(pageNum, totalPages) {
-                    	
-                    	var contents = page.evaluate(function() {
-                    		return h2pFooter.contents;
-                    	});
-                    	
-                		return contents.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
-                    })
+            if(options.useTemplateFooter){
+            	if (page.evaluate(function(){return typeof h2pFooter == "object";})) {
+                	
+                    paperSize.footer = {
+                        height: page.evaluate(function() {
+                            return h2pFooter.height;
+                        }),
+                        
+                        contents: phantom.callback(function(pageNum, totalPages) {
+                        	
+                        	var contents = page.evaluate(function() {
+                        		return h2pFooter.contents;
+                        	});
+                        	
+                    		return contents.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
+                        })
+                    }
+                	
                 }
-            	
             }else if (options.footer) {
                 paperSize.footer = {
                     height: options.footer.height,
@@ -94,23 +96,25 @@ try {
             }
 
             // Custom header in the markup
-            if (page.evaluate(function(){return typeof h2pHeader == "object";})) {
-            	
-                paperSize.header = {
-                    height: page.evaluate(function() {
-                        return h2pHeader.height;
-                    }),
-                    
-                    contents: phantom.callback(function(pageNum, totalPages) {
-                    	
-                    	var contents = page.evaluate(function() {
-                    		return h2pHeader.contents;
-                    	});
-                    	
-                		return contents.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
-                    })
+            if(options.useTemplateHeader){
+            	if (page.evaluate(function(){return typeof h2pHeader == "object";})) {
+                	
+                    paperSize.header = {
+                        height: page.evaluate(function() {
+                            return h2pHeader.height;
+                        }),
+                        
+                        contents: phantom.callback(function(pageNum, totalPages) {
+                        	
+                        	var contents = page.evaluate(function() {
+                        		return h2pHeader.contents;
+                        	});
+                        	
+                    		return contents.replace('{{pageNum}}', pageNum).replace('{{totalPages}}', totalPages);
+                        })
+                    }
+                	
                 }
-            	
             }else if (options.header) {
                 paperSize.header = {
                     height: options.header.height,

@@ -90,6 +90,8 @@ class PhantomJS extends ConverterAbstract
         'border' => '1cm',
         'header' => null,
         'footer' => null,
+    	'useTemplateHeader' => false,
+        'useTemplateFooter' => false,
     );
 
     /**
