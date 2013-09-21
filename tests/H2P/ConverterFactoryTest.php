@@ -13,6 +13,8 @@ class ConverterFactoryTest extends \PHPUnit_Framework_TestCase
             'border' => '3cm',
             'header' => null,
             'footer' => null,
+            'allowParseCustomFooter' => false,
+            'allowParseCustomHeader' => false,
         );
 
         $instance = ConverterFactory::factory(array(
