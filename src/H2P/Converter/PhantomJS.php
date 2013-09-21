@@ -87,6 +87,8 @@ class PhantomJS extends ConverterAbstract
         'orientation' => self::ORIENTATION_PORTRAIT,
         'format' => self::FORMAT_A4,
         'zoomFactor' => 1,
+        'allowParseCustomFooter' => false,
+        'allowParseCustomHeader' => false,
         'border' => '1cm',
         'header' => null,
         'footer' => null,

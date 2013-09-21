@@ -66,6 +66,31 @@ try {
                 border: options.border
             };
 
+            // If we enable custom footer per page, evaluate it
+            if (options.allowParseCustomFooter || options.allowParseCustomHeader) {
+                var customOptions = page.evaluate(function() {
+                    return (typeof _h2p_options == "object"
+                        && (typeof _h2p_options.footer == "object" || typeof _h2p_options.header == "object"))
+                        ? _h2p_options : {};
+                });
+            }
+
+            if (options.allowParseCustomFooter && customOptions.footer) {
+                options.footer = options.footer || { height: '1cm', content: '' }; // Avoid some errors
+                options.footer = {
+                    height: customOptions.footer.height || options.footer.height,
+                    content: customOptions.footer.content || options.footer.content
+                }
+            }
+
+            if (options.allowParseCustomHeader && customOptions.header) {
+                options.header = options.header || { height: '1cm', content: '' }; // Avoid some errors
+                options.header = {
+                    height: customOptions.header.height || options.header.height,
+                    content: customOptions.header.content || options.header.content
+                }
+            }
+
             if (options.footer) {
                 paperSize.footer = {
                     height: options.footer.height,
