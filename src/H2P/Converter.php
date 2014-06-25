@@ -157,7 +157,7 @@ class Converter
     {
         $uri = $this->uri;
         if ($this->uri instanceof TempFile) {
-            $uri = $this->uri->getFileName();
+            $uri = $this->uri->getFileURI();
         }
 
         $destination = $this->destination;

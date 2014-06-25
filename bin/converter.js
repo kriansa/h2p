@@ -32,6 +32,7 @@
 
 var page = require('webpage').create();
 var args = require('system').args;
+var fs = require('fs');
 
 function errorHandler(e) {
     console.log(JSON.stringify({
@@ -58,7 +59,7 @@ try {
         'User-Agent': 'PhantomJS'
     };
 
-    page.open(uri, function (status) {
+    page.onLoadFinished = function(status) {
         try {
             if (status !== 'success') {
                 throw 'Unable to access the URI!';
@@ -78,7 +79,16 @@ try {
         } catch (e) {
             errorHandler(e);
         }
-    });
+    };
+
+    if (uri.substr(0,7) == 'file://') {
+        var f = fs.open(uri.substr(7), 'r');
+        page.content = f.read();
+        f.close();
+    } else {
+        page.open(uri);
+    }
+
 } catch (e) {
     errorHandler(e);
 }

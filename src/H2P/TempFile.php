@@ -78,6 +78,16 @@ class TempFile
     }
 
     /**
+     * Get the file URI
+     *
+     * @
+     */
+    public function getFileURI()
+    {
+        return 'file://' . $this->getFileName();
+    }
+
+    /**
      * Get the file content
      *
      * @return string
