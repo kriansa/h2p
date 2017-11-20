@@ -1,4 +1,4 @@
-# H2P [![Build Status](https://api.travis-ci.org/kriansa/h2p.png)](https://travis-ci.org/kriansa/h2p)
+# H2P [![Build Status](https://api.travis-ci.org/kriansa/h2p.png)](https://travis-ci.org/kriansa/h2p) [![Maintenance](https://img.shields.io/maintenance/no/2014.svg)]()
 
 Convert your HTML files to PDF with ease. Thanks to PhantomJS, you can write CSS3, HTML5 and Javascript and it will convert and print your files just like you see them in your browser.
 
