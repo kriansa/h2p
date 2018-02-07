@@ -116,7 +116,7 @@ abstract class ConverterAbstract
     {
         if (!$origin instanceof Request) {
             if ($origin instanceof TempFile) {
-                $origin = 'file://' . $origin->getFileName();
+                $origin = 'file:///' . $origin->getFileName();
             }
 
             // Create a simple GET request URI
