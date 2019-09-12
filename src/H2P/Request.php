@@ -102,7 +102,7 @@ class Request
         $this->setMethod($method ?: self::METHOD_GET);
         $headers and $this->headers = $headers;
         $params and $this->params = $params;
-        if (count($cookies)) {
+        if (is_array($cookies) && count($cookies)) {
             $this->addCookies($cookies);
         }
     }
